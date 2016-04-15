@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我是表情包"
+        android:textSize="35sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_main_official"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="自带表情包"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tv_main_own"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/bg_main_button"/>
+
+    <TextView
+        android:id="@+id/tv_main_own"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="相册"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/bg_main_button" />
+</RelativeLayout>
