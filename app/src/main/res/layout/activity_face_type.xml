@@ -3,6 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include layout="@layout/layout_top_content"/>
     <android.support.design.widget.TabLayout
         android:id="@+id/tl_main"
         android:layout_width="match_parent"

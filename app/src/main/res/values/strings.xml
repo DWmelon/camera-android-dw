@@ -1,4 +1,9 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">我是表情包</string>
     <string name="action_settings">Settings</string>
+
+    <string name="primary_title_official">自带表情包</string>
+    <string name="primary_title_about_us">关于我们</string>
+    <string name="about_us_advice">建议反馈</string>
+    <string name="about_us_contact">联系我们</string>
 </resources>

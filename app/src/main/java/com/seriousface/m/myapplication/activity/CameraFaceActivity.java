@@ -3,18 +3,28 @@ package com.seriousface.m.myapplication.activity;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +32,17 @@ import android.widget.Toast;
 import com.seriousface.m.myapplication.R;
 import com.seriousface.m.myapplication.constant.Constant;
 import com.seriousface.m.myapplication.wxapi.WXShareManager;
+import com.umeng.socialize.ShareAction;
+import com.umeng.socialize.UMAuthListener;
+import com.umeng.socialize.UMShareAPI;
+import com.umeng.socialize.UMShareListener;
+import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.media.UMImage;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -33,20 +50,28 @@ import java.util.UUID;
  */
 public class CameraFaceActivity extends Activity implements View.OnClickListener{
 
+    int screenWidth;
+    int screenHeight;
+
     SurfaceView surfaceView;
     SurfaceHolder surfaceHolder;
     Camera camera;
     byte[] photoData;
+    Bitmap shardBitmap;
     ImageView ivCameraTake;
     ImageView ivExampleIcon;
+    UMShareAPI mShareAPI;
+    SHARE_MEDIA[] displaylist = new SHARE_MEDIA[]
+            {
+                    SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.SINA,
+                    SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE
+            };
 
     RelativeLayout rlCamera1;
-    RelativeLayout rlCamera2;
     RelativeLayout rlCamera3;
-    TextView tvCamera2;
-    TextView tvCameraSave;
-    TextView tvCameraReset;
-    TextView tvCameraShare;
+    ImageView tvCameraSave;
+    ImageView tvCameraReset;
+    RelativeLayout tvCameraShare;
 
     int originalNum = -1;
     WXShareManager manager;
@@ -58,6 +83,15 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
         initView();
         initData();
         initSurfaceView();
+        initShare();
+
+        DisplayMetrics  dm = new DisplayMetrics();
+        //取得窗口属性
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        //窗口的宽度
+        screenWidth = dm.widthPixels;
+        screenHeight = dm.heightPixels;
     }
 
     private void initView(){
@@ -66,12 +100,10 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
         ivExampleIcon = (ImageView)findViewById(R.id.iv_compare_icon);
 
         rlCamera1 = (RelativeLayout)findViewById(R.id.rl_camera1);
-        rlCamera2 = (RelativeLayout)findViewById(R.id.rl_camera2);
         rlCamera3 = (RelativeLayout)findViewById(R.id.rl_camera3);
-        tvCamera2 = (TextView)findViewById(R.id.tv_camera2);
-        tvCameraShare = (TextView)findViewById(R.id.tv_camera_share);
-        tvCameraReset = (TextView)findViewById(R.id.tv_camera_reset);
-        tvCameraSave = (TextView)findViewById(R.id.tv_camera_save);
+        tvCameraShare = (RelativeLayout)findViewById(R.id.tv_camera_share);
+        tvCameraReset = (ImageView)findViewById(R.id.tv_camera_reset);
+        tvCameraSave = (ImageView)findViewById(R.id.tv_camera_save);
     }
 
     private void initData(){
@@ -89,6 +121,7 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
             showError();
         }
 
+        ivCameraTake.setImageResource(R.drawable.icon_camera_3);
 
         ivCameraTake.setOnClickListener(this);
         tvCameraReset.setOnClickListener(this);
@@ -160,6 +193,30 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
         });
     }
 
+    private void initShare(){
+        mShareAPI = UMShareAPI.get(this);
+        //SHARE_MEDIA platform = SHARE_MEDIA.SINA;
+        //mShareAPI.doOauthVerify(this, platform, umAuthListener);
+
+    }
+
+    private UMAuthListener umAuthListener = new UMAuthListener() {
+        @Override
+        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
+            Toast.makeText( getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
+            Toast.makeText( getApplicationContext(), "Authorize fail", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA platform, int action) {
+            Toast.makeText( getApplicationContext(), "Authorize cancel", Toast.LENGTH_SHORT).show();
+        }
+    };
+
     private void showError(){
         Toast.makeText(this,"出错啦~无法获取到范例图片",Toast.LENGTH_LONG).show();
         finish();
@@ -186,8 +243,6 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
 
 
     private void takePhoto(){
-        rlCamera1.setVisibility(View.INVISIBLE);
-        rlCamera2.setVisibility(View.VISIBLE);
         ValueAnimator valueAnimator = ValueAnimator.ofInt(3);
         valueAnimator.setDuration(3000);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -195,7 +250,11 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
             public void onAnimationUpdate(ValueAnimator animation) {
                 int num = (int) animation.getAnimatedValue();
                 if (originalNum != num) {
-                    tvCamera2.setText(String.valueOf(3 - num));
+                    if(3 - num==2){
+                        ivCameraTake.setImageResource(R.drawable.icon_camera_2);
+                    }else if(3 - num==1){
+                        ivCameraTake.setImageResource(R.drawable.icon_camera_1);
+                    }
                 }
             }
         });
@@ -210,9 +269,10 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
                 camera.takePicture(null, null, new Camera.PictureCallback() {
                     @Override
                     public void onPictureTaken(byte[] data, Camera camera) {
-                        rlCamera2.setVisibility(View.INVISIBLE);
+                        rlCamera1.setVisibility(View.INVISIBLE);
                         rlCamera3.setVisibility(View.VISIBLE);
                         photoData = data;
+                        createFinalPhoto();
                     }
                 });
             }
@@ -239,14 +299,42 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
 
     private void resetPhoto(){
         rlCamera3.setVisibility(View.INVISIBLE);
+        ivCameraTake.setImageResource(R.drawable.icon_camera_3);
         rlCamera1.setVisibility(View.VISIBLE);
         camera.startPreview();
     }
 
     private void sharePhoto(){
         new SavePictureTask().execute(photoData);
-        WXShareManager.ShareContentPic shareContentPic = manager.new ShareContentPic(photoData);
-        manager.shareByWeixin(shareContentPic,WXShareManager.WEIXIN_SHARE_TYPE_TALK);
+
+        UMImage image = new UMImage(this, shardBitmap);
+
+        new ShareAction(this).setDisplayList(displaylist)
+                .withText(" ")
+                .withMedia(image)
+                .setListenerList(new ShardListener())
+                .open();
+
+//        WXShareManager.ShareContentPic shareContentPic = manager.new ShareContentPic(shardBitmap);
+//        manager.shareByWeixin(shareContentPic, WXShareManager.WEIXIN_SHARE_TYPE_TALK);
+    }
+
+    private class ShardListener implements UMShareListener{
+
+        @Override
+        public void onResult(SHARE_MEDIA share_media) {
+            Toast.makeText(CameraFaceActivity.this,"分享成功啦", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onError(SHARE_MEDIA share_media, Throwable throwable) {
+            Toast.makeText(CameraFaceActivity.this,"分享失败啦", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel(SHARE_MEDIA share_media) {
+            Toast.makeText(CameraFaceActivity.this,"分享取消啦", Toast.LENGTH_SHORT).show();
+        }
     }
 
     class SavePictureTask extends AsyncTask<byte[], String, String> {
@@ -267,5 +355,71 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
         }
     }
 
+    private void createFinalPhoto(){
+        final View view = LayoutInflater.from(this).inflate(R.layout.layout_result_photo_officail1,null);
+        ImageView ivMe = (ImageView)view.findViewById(R.id.iv_camera_final_photo_official1);
+        ImageView ivExample = (ImageView)view.findViewById(R.id.iv_camera_final_photo_example);
+//        view.measure(screenWidth, screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height));
+        Bitmap bmp = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+        ivMe.setImageBitmap(adjustPhotoRotation(bmp,-90));
 
+        ivExample.setImageResource(R.drawable.icon_test);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(screenWidth,screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height));
+        view.layout(0, 0, screenWidth, screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height));
+        view.setLayoutParams(params);
+
+
+        shardBitmap = loadBitmapFromView(view);
+
+
+    }
+
+
+
+    /**
+     * 将view转成bitmap
+     *
+     * @param view
+     * @return
+     */
+    public Bitmap loadBitmapFromView(View view) {
+        if (view == null) {
+            return null;
+        }
+        view.measure(View.MeasureSpec.makeMeasureSpec(screenWidth,View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height), View.MeasureSpec.EXACTLY));
+        // 这个方法也非常重要，设置布局的尺寸和位置
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        // 生成bitmap
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        // 利用bitmap生成画布
+        Canvas canvas = new Canvas(bitmap);
+        // 把view中的内容绘制在画布上
+        view.draw(canvas);
+
+        return bitmap;
+    }
+
+
+    public Bitmap adjustPhotoRotation(Bitmap bm, final int orientationDegree)
+    {
+        Matrix m = new Matrix();
+        m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+        m.postScale(-1, 1);
+        try {
+            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+            return bm1;
+        } catch (OutOfMemoryError ex) {
+        }
+        return null;
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mShareAPI.onActivityResult(requestCode, resultCode, data);
+        resetPhoto();
+    }
 }

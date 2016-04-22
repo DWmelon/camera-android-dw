@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    >
+
+    <include layout="@layout/layout_top_content"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_about_advice"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_us_advice"
+            android:textSize="16sp"
+            android:textColor="@color/text_content_color"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="25dp"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_about_contact"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_us_contact"
+            android:textSize="16sp"
+            android:textColor="@color/text_content_color"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="25dp"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

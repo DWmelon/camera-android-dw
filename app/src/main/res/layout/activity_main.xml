@@ -2,43 +2,104 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
-    <TextView
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:src="@drawable/bg_main"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/iv_main_top_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="我是表情包"
-        android:textSize="35sp"
+        android:src="@drawable/icon_main_top_view"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        />
+        android:layout_marginTop="50dp"/>
 
-    <TextView
+    <RelativeLayout
         android:id="@+id/tv_main_official"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:text="自带表情包"
-        android:textSize="15sp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/tv_main_own"
-        android:layout_marginBottom="50dp"
-        android:background="@drawable/bg_main_button"/>
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="30dp">
 
-    <TextView
+
+        <View
+            android:id="@+id/tv_main_official_tip"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_main_button"
+            android:layout_alignBottom="@+id/iv_main_official_img"/>
+
+        <ImageView
+            android:id="@+id/iv_main_official_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_main_bao"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_main_official"
+            android:layout_alignBottom="@+id/iv_main_official_img"
+            android:layout_toRightOf="@+id/iv_main_official_img"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
         android:id="@+id/tv_main_own"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:text="相册"
-        android:textSize="15sp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_above="@+id/tv_about_us"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="50dp">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/bg_main_button"
+            android:layout_alignBottom="@+id/iv_main_own_img"/>
+
+        <ImageView
+            android:id="@+id/iv_main_own_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_main_jian"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="30dp"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_main_own"
+            android:layout_alignBottom="@+id/iv_main_own_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"/>
+
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/tv_about_us"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/icon_main_about_us"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100dp"
-        android:background="@drawable/bg_main_button" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"/>
 </RelativeLayout>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@android:color/white">
 
     <SurfaceView
         android:id="@+id/sv_camera"
@@ -12,81 +12,73 @@
     <RelativeLayout
         android:id="@+id/rl_camera1"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@android:color/black"
+        android:layout_height="@dimen/camera_bottom_content_height"
+        android:background="@android:color/white"
         android:layout_alignParentBottom="true">
         <ImageView
             android:id="@+id/iv_camera_take"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:scaleType="centerInside"
-            android:src="@drawable/icon_take_photo"
+            android:src="@drawable/icon_camera_3"
             android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_camera2"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:visibility="invisible"
-        android:background="@android:color/black"
-        android:layout_alignParentBottom="true">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:src="@drawable/icon_camera_count"
-            android:layout_centerInParent="true"/>
-        <TextView
-            android:id="@+id/tv_camera2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="28sp"
-            android:textColor="@android:color/white"/>
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_camera3"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/camera_bottom_content_height"
         android:visibility="invisible"
-        android:background="@android:color/black"
+        android:background="#e6e6e6"
         android:layout_alignParentBottom="true">
 
-        <TextView
+
+        <RelativeLayout
             android:id="@+id/tv_camera_share"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
             android:layout_centerInParent="true"
-            android:background="@drawable/bg_camera_button"
-            android:gravity="center"
-            android:text="分享"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"/>
+            android:background="@drawable/bg_camera_button">
 
-        <TextView
+            <ImageView
+                android:id="@+id/tv_camera_share_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/icon_share_view"
+                android:layout_marginLeft="10dp"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_share_tip"
+                android:layout_toRightOf="@+id/tv_camera_share_view"
+                android:layout_marginLeft="5dp"/>
+
+        </RelativeLayout>
+
+
+        <ImageView
             android:id="@+id/tv_camera_reset"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_reset_photo"
+            android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:gravity="center"
-            android:text="重拍"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"/>
+            android:layout_alignParentLeft="true"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/tv_camera_save"
-            android:layout_width="100dp"
-            android:layout_height="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:text="保存"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"/>
+            android:src="@drawable/icon_sava_photo"/>
 
 
     </RelativeLayout>

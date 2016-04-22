@@ -52,7 +52,8 @@ public class WXShareManager{
 	private WXShareManager(Context context){
 		this.context = context;
 		//初始化数据
-		weixinAppId = "wx8601005";
+		weixinAppId = "wx81fd52b3abdc249f";
+		//AppSecret：4a1f0f218cf63acef71893726f7a19c3
 		//初始化微信分享代码
 		if(weixinAppId != null){
 			initWeixinShare(context);
@@ -102,7 +103,7 @@ public class WXShareManager{
 		protected abstract String getURL();
 		protected abstract int getPicResource();
 		protected abstract byte[] getData();
-
+		protected abstract Bitmap getBitmap();
 	}
 	
 	/**
@@ -148,6 +149,11 @@ public class WXShareManager{
 		}
 
 		@Override
+		protected Bitmap getBitmap() {
+			return null;
+		}
+
+		@Override
 		protected int getShareWay() {
 			return WEIXIN_SHARE_WAY_TEXT;
 		}
@@ -168,9 +174,18 @@ public class WXShareManager{
 		public ShareContentPic(byte[] data){
 			this.data = data;
 		}
+		private Bitmap bitmap;
+		public ShareContentPic(Bitmap bitmap){
+			this.bitmap = bitmap;
+		}
 
 		protected byte[] getData(){
 			return data;
+		}
+
+		@Override
+		protected Bitmap getBitmap() {
+			return bitmap;
 		}
 
 		@Override
@@ -243,6 +258,11 @@ public class WXShareManager{
 		}
 
 		@Override
+		protected Bitmap getBitmap() {
+			return null;
+		}
+
+		@Override
 		protected int getShareWay() {
 			return WEIXIN_SHARE_WAY_WEBPAGE;
 		}
@@ -276,7 +296,7 @@ public class WXShareManager{
 	 */
 	private void sharePicture(int shareType, ShareContent shareContent) {
 		//Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_test2);
-		Bitmap bmp = BitmapFactory.decodeByteArray(shareContent.getData(), 0, shareContent.getData().length);
+		Bitmap bmp = shareContent.getBitmap();
 		Bitmap bmp2 = BitmapUtil.compressImage(bmp);
 		bmp.recycle();
 
