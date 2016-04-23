@@ -10,7 +10,7 @@ import com.seriousface.m.myapplication.R;
 /**
  * Created by i on 2016/4/19.
  */
-public class AboutUsActivity extends Activity implements View.OnClickListener{
+public class AboutUsActivity extends BaseActivity implements View.OnClickListener{
 
     TextView title;
     View back;

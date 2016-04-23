@@ -85,10 +85,10 @@
 
     <ImageView
         android:id="@+id/iv_compare_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/icon_test"
-        android:scaleType="fitXY"
+        android:scaleType="fitCenter"
         android:layout_alignParentRight="true"
         android:layout_above="@+id/rl_camera1"
         android:layout_marginRight="20dp"

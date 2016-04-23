@@ -1,5 +1,6 @@
 package com.seriousface.m.myapplication.activity;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -25,7 +26,7 @@ import com.seriousface.m.myapplication.util.EmailUtil;
 import java.io.IOException;
 
 
-public class MainActivity extends FragmentActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     RelativeLayout tvOfficial;
     RelativeLayout tvOwn;

@@ -12,7 +12,7 @@ import com.seriousface.m.myapplication.R;
 /**
  * Created by i on 2016/4/19.
  */
-public class SettingActivity extends Activity implements View.OnClickListener{
+public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
     TextView tvTitle;
 

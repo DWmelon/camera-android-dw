@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/4/14.
  */
-public class ViewPagerAdapter extends FragmentPagerAdapter{
+public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     List<FaceFragment> fragments = new ArrayList<>();
     String[] titles = {"emoji","熊本熊"};

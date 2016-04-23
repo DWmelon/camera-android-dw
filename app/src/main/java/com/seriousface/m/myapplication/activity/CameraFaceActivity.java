@@ -39,6 +39,7 @@ import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +49,7 @@ import java.util.UUID;
 /**
  * Created by Administrator on 2016/4/15.
  */
-public class CameraFaceActivity extends Activity implements View.OnClickListener{
+public class CameraFaceActivity extends BaseActivity implements View.OnClickListener{
 
     int screenWidth;
     int screenHeight;
@@ -195,27 +196,8 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
 
     private void initShare(){
         mShareAPI = UMShareAPI.get(this);
-        //SHARE_MEDIA platform = SHARE_MEDIA.SINA;
-        //mShareAPI.doOauthVerify(this, platform, umAuthListener);
-
     }
 
-    private UMAuthListener umAuthListener = new UMAuthListener() {
-        @Override
-        public void onComplete(SHARE_MEDIA platform, int action, Map<String, String> data) {
-            Toast.makeText( getApplicationContext(), "Authorize succeed", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onError(SHARE_MEDIA platform, int action, Throwable t) {
-            Toast.makeText( getApplicationContext(), "Authorize fail", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onCancel(SHARE_MEDIA platform, int action) {
-            Toast.makeText( getApplicationContext(), "Authorize cancel", Toast.LENGTH_SHORT).show();
-        }
-    };
 
     private void showError(){
         Toast.makeText(this,"出错啦~无法获取到范例图片",Toast.LENGTH_LONG).show();
@@ -292,7 +274,7 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
 
 
     private void savePhoto(){
-        new SavePictureTask().execute(photoData);
+        writePhotoToPhone();
         Toast.makeText(this,"已保存到手机",Toast.LENGTH_LONG).show();
         resetPhoto();
     }
@@ -305,8 +287,7 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
     }
 
     private void sharePhoto(){
-        new SavePictureTask().execute(photoData);
-
+        writePhotoToPhone();
         UMImage image = new UMImage(this, shardBitmap);
 
         new ShareAction(this).setDisplayList(displaylist)
@@ -317,6 +298,19 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
 
 //        WXShareManager.ShareContentPic shareContentPic = manager.new ShareContentPic(shardBitmap);
 //        manager.shareByWeixin(shareContentPic, WXShareManager.WEIXIN_SHARE_TYPE_TALK);
+    }
+
+    private void writePhotoToPhone(){
+        //旋转180
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+        //adjustPhotoRotation(bitmap, 180);
+        //转成byte[]
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+//        photoData = baos.toByteArray();
+
+        new SavePictureTask().execute(photoData);
     }
 
     private class ShardListener implements UMShareListener{
@@ -346,6 +340,7 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
             try {
                 FileOutputStream fos = new FileOutputStream(picture.getPath());
                 fos.write(params[0]);
+                fos.flush();
                 fos.close();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -368,8 +363,11 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
         view.layout(0, 0, screenWidth, screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height));
         view.setLayoutParams(params);
 
-
         shardBitmap = loadBitmapFromView(view);
+
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        shardBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+        photoData = bao.toByteArray();
 
 
     }
@@ -409,9 +407,11 @@ public class CameraFaceActivity extends Activity implements View.OnClickListener
         m.postScale(-1, 1);
         try {
             Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+            Log.d("turnphoto","yes");
             return bm1;
         } catch (OutOfMemoryError ex) {
         }
+        Log.d("turnphoto","no");
         return null;
     }
 

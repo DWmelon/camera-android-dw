@@ -14,7 +14,7 @@ import com.seriousface.m.myapplication.util.EmailUtil;
 /**
  * Created by i on 2016/4/19.
  */
-public class AdviceActivity extends Activity implements View.OnClickListener{
+public class AdviceActivity extends BaseActivity implements View.OnClickListener{
 
     TextView title;
     View back;

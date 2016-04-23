@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.seriousface.m.myapplication.R;
 import com.seriousface.m.myapplication.adapter.ViewPagerAdapter;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by Administrator on 2016/4/14.
@@ -50,5 +51,17 @@ public class FaceTypeActivity extends FragmentActivity implements View.OnClickLi
                 finish();
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
     }
 }
