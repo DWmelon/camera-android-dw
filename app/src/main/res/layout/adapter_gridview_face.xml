@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
-    <ImageView
-        android:id="@+id/iv_grid_item"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@+id/ll_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/iv_grid_item"
+            android:scaleType="fitCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

@@ -25,6 +25,8 @@ public class FaceFragment extends Fragment implements AdapterView.OnItemClickLis
 
     GridView gridLayout;
     GridViewAdapter adapter;
+
+    String pageType;
     public static FaceFragment newInstant(Bundle bundle){
         FaceFragment fragment = new FaceFragment();
         fragment.setArguments(bundle);
@@ -34,22 +36,32 @@ public class FaceFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contentView = inflater.inflate(R.layout.fragment_face_content,container,false);
+        if(getArguments()!=null){
+            pageType = getArguments().getString(Constant.KEY_PIC_PAGE_TYPE);
+        }
+
         initView();
+        initData();
         return contentView;
     }
 
     private void initView(){
         gridLayout = (GridView)contentView.findViewById(R.id.gv_face);
-        adapter = new GridViewAdapter(getActivity());
+        adapter = new GridViewAdapter(getActivity(),pageType);
         gridLayout.setAdapter(adapter);
         gridLayout.setOnItemClickListener(this);
+    }
+
+    private void initData(){
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent i = new Intent(getActivity(), CameraFaceActivity.class);
-        i.putExtra(Constant.KEY_PIC_CHOOSE_TYPE,Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL);
-        i.putExtra(Constant.KEY_PIC_CHOOSE_DATA,R.drawable.icon_test);
+        i.putExtra(Constant.KEY_PIC_CHOOSE_TYPE, Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL);
+        int ids = (int)parent.getItemAtPosition(position);
+        i.putExtra(Constant.KEY_PIC_CHOOSE_DATA,ids);
         getActivity().startActivity(i);
     }
 }

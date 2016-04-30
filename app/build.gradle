@@ -19,9 +19,28 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+
+    //签名
+    signingConfigs {
+
+        relealse {
+            //这样写就得把demo.jk文件放在项目目录
+            storeFile file("keystore.jks")
+            storePassword "android"
+            keyAlias "seriousface"
+            keyPassword "android"
+        }
+    }
+
+
     buildTypes {
+
         release {
-            minifyEnabled false
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            signingConfig signingConfigs.relealse
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -61,4 +80,6 @@ dependencies {
     compile 'com.android.support:design:23.3.0'
     compile 'com.umeng.analytics:analytics:latest.integration'
 }
+
+
 

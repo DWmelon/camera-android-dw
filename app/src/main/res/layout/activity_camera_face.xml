@@ -2,26 +2,57 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="#e6e6e6">
 
     <SurfaceView
         android:id="@+id/sv_camera"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="0dip"
+        android:layout_height="0dip"/>
 
     <RelativeLayout
         android:id="@+id/rl_camera1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/camera_bottom_content_height"
-        android:background="@android:color/white"
+        android:background="#e6e6e6"
         android:layout_alignParentBottom="true">
+
         <ImageView
-            android:id="@+id/iv_camera_take"
+            android:id="@+id/tv_camera_back"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_reset_photo"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+
+
+        <TextView
+            android:id="@+id/tv_camera_take"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:text="3"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_take_photo_gray"/>
+
+        <ImageView
+            android:id="@+id/iv_turn_photo"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:scaleType="centerInside"
-            android:src="@drawable/icon_camera_3"
-            android:layout_centerInParent="true"/>
+            android:src="@drawable/icon_turn_photo1"
+            android:scaleType="fitCenter"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="10dp"/>
+
 
     </RelativeLayout>
 
@@ -30,7 +61,7 @@
         android:id="@+id/rl_camera3"
         android:layout_width="match_parent"
         android:layout_height="@dimen/camera_bottom_content_height"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:background="#e6e6e6"
         android:layout_alignParentBottom="true">
 
@@ -41,6 +72,7 @@
             android:layout_height="60dp"
             android:layout_centerInParent="true"
             android:background="@drawable/bg_camera_button">
+
 
             <ImageView
                 android:id="@+id/tv_camera_share_view"
@@ -67,7 +99,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/icon_reset_photo"
-            android:layout_marginLeft="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"/>
 
@@ -75,7 +110,10 @@
             android:id="@+id/tv_camera_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
+            android:paddingRight="15dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/icon_sava_photo"/>

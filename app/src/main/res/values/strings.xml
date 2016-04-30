@@ -6,4 +6,10 @@
     <string name="primary_title_about_us">关于我们</string>
     <string name="about_us_advice">建议反馈</string>
     <string name="about_us_contact">联系我们</string>
+
+    <string name="advice_empty_tip">将你的建议写下来吧～</string>
+
+    <string name="about_us_tip1">联系我们（求勾搭！！！）</string>
+    <string name="about_us_tip2">请发送至3062016046@qq.com</string>
+    <string name="about_us_tip3">我是表情包团队</string>
 </resources>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/common_bg">
 
     <include layout="@layout/layout_top_content"/>
 
@@ -19,23 +20,33 @@
             android:id="@+id/tv_contact_bottom1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="（求勾搭）联系方式："
+            android:text="@string/about_us_tip1"
             android:textSize="18sp"
             android:textColor="@color/text_content_color"
-            android:layout_above="@+id/tv_contact_bottom2"
-            android:layout_alignLeft="@+id/tv_contact_bottom2"
-            android:layout_marginBottom="10dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"/>
         <TextView
             android:id="@+id/tv_contact_bottom2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="请发送至3062016046@qq.com"
+            android:text="@string/about_us_tip2"
             android:textSize="18sp"
             android:textColor="@color/text_content_color"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_below="@+id/tv_contact_bottom1"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"/>
+
+        <TextView
+            android:id="@+id/tv_contact_bottom3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_us_tip3"
+            android:textSize="12sp"
+            android:textColor="@color/text_gray_color_light"
+            android:layout_below="@+id/tv_contact_bottom2"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"/>
+
 
     </RelativeLayout>
 

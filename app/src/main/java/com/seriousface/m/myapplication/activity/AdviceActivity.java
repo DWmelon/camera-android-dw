@@ -2,6 +2,8 @@ package com.seriousface.m.myapplication.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,10 +35,31 @@ public class AdviceActivity extends BaseActivity implements View.OnClickListener
         mAdviceContent = (EditText)findViewById(R.id.et_feedback_content);
         mAdviceQQ = (EditText)findViewById(R.id.et_qq_content);
 
-        ivSendEmail.setImageResource(R.drawable.icon_send_mail);
+        ivSendEmail.setImageResource(R.drawable.icon_send_mail_gray);
         title.setText(getString(R.string.about_us_advice));
         back.setOnClickListener(this);
         ivSendEmail.setOnClickListener(this);
+
+        mAdviceContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.toString().isEmpty()){
+                    ivSendEmail.setImageResource(R.drawable.icon_send_mail_gray);
+                }else{
+                    ivSendEmail.setImageResource(R.drawable.icon_send_mail);
+                }
+            }
+        });
     }
 
     @Override
@@ -46,15 +69,23 @@ public class AdviceActivity extends BaseActivity implements View.OnClickListener
                 finish();
                 break;
             case R.id.iv_top_right:
-                sendEmail();
+                checkAndSend();
                 break;
         }
     }
 
-    private void sendEmail(){
-                m = new EmailUtil("375591580", "htydznxrbyflbibc");
+    private void checkAndSend(){
+        if(mAdviceContent.getText().toString().trim().isEmpty()){
+            Toast.makeText(this,getString(R.string.advice_empty_tip),Toast.LENGTH_LONG).show();
+        }else{
+            sendEmail();
+        }
+    }
 
-                String[] toArr = {"279482189@qq.com"};
+    private void sendEmail(){
+                m = new EmailUtil("375591580@qq.com", "ggrsufgachusbjjg");
+
+                String[] toArr = {"3062016046@qq.com"};
                 m.setTo(toArr);
                 m.setFrom("375591580@qq.com");
                 m.setSubject(mAdviceQQ.getText().toString().trim()+"的反馈");

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffff00</color>
+
+    <color name="colorPrimary">#ffffff00</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
@@ -10,4 +11,6 @@
     <color name="text_hint">#cac8d4</color>
     <color name="text_gray_color_light">#8c8c8c</color>
     <color name="line_color">#eeeeee</color>
+
+    <color name="primary_top_bar_line">#dadada</color>
 </resources>
