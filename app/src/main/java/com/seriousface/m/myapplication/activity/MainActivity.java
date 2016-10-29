@@ -21,7 +21,9 @@ import android.widget.Toast;
 
 import com.seriousface.m.myapplication.R;
 import com.seriousface.m.myapplication.constant.Constant;
+import com.seriousface.m.myapplication.constant.StatConstant;
 import com.seriousface.m.myapplication.util.EmailUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
 
@@ -59,15 +61,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.tv_main_official:
                 i = new Intent(MainActivity.this,FaceTypeActivity.class);
                 MainActivity.this.startActivity(i);
+                MobclickAgent.onEvent(MainActivity.this, StatConstant.PageTypeChooseOfficial);
                 break;
             case R.id.tv_main_own:
                 i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.setType("image/*");
                 startActivityForResult(i, VALUE_INTENT_TO_OWN);
+                MobclickAgent.onEvent(MainActivity.this, StatConstant.PageTypeChooseOwn);
                 break;
             case R.id.tv_about_us:
                 i = new Intent(MainActivity.this,SettingActivity.class);
                 MainActivity.this.startActivity(i);
+                MobclickAgent.onEvent(MainActivity.this, StatConstant.PageSetting);
                 break;
         }                                                                                                                                        
     }

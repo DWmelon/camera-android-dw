@@ -2,10 +2,7 @@ package com.seriousface.m.myapplication.activity;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,7 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,31 +22,31 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.seriousface.m.myapplication.R;
 import com.seriousface.m.myapplication.constant.Constant;
+import com.seriousface.m.myapplication.constant.StatConstant;
 import com.seriousface.m.myapplication.util.CamParaUtil;
 import com.seriousface.m.myapplication.util.DisplayUtil;
 import com.seriousface.m.myapplication.wxapi.WXShareManager;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.ShareAction;
-import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.UMShareListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.media.UMImage;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -72,7 +69,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
     SHARE_MEDIA[] displaylist = new SHARE_MEDIA[]
             {
                     SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.SINA,
-                    SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE
+                    SHARE_MEDIA.QQ
             };
 
     ImageView ivCameraTurn;
@@ -80,7 +77,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
     RelativeLayout rlCamera3;
     ImageView tvCameraSave;
     ImageView tvCameraReset;
-    ImageView ivBack;
+    TextView ivBack;
     RelativeLayout tvCameraShare;
 
     int pageType;
@@ -111,7 +108,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView(){
-        ivBack = (ImageView)findViewById(R.id.tv_camera_back);
+        ivBack = (TextView)findViewById(R.id.tv_camera_back);
 
         surfaceView = (SurfaceView)findViewById(R.id.sv_camera);
         ivCameraTake = (TextView)findViewById(R.id.tv_camera_take);
@@ -150,7 +147,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
             showError();
         }
 
-        ivCameraTake.setBackgroundResource(R.drawable.btn_take_photo_gray);
+        ivCameraTake.setBackgroundResource(R.drawable.icon_camera_btn_gray);
         ivCameraTake.setText("3");
 
         ivCameraTake.setOnClickListener(this);
@@ -176,7 +173,13 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 //                            camera = Camera.open(i);
 //                        }
 //                    }
-                    turnPhoto();
+                    if(cameraPosition == 1){
+                        cameraPosition = 0;
+                    }else{
+                        cameraPosition = 1;
+                    }
+                        turnPhoto();
+
                 }
                 if (camera == null) {
                     camera = Camera.open();
@@ -253,18 +256,22 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         switch (v.getId()){
             case R.id.tv_camera_take:
                 takePhoto();
+                MobclickAgent.onEvent(CameraFaceActivity.this, StatConstant.BtnTakePhoto);
                 break;
             case R.id.tv_camera_save:
                 savePhoto();
+                MobclickAgent.onEvent(CameraFaceActivity.this, StatConstant.BtnSavePhoto);
                 break;
             case R.id.tv_camera_reset:
                 resetPhoto();
                 break;
             case R.id.tv_camera_share:
                 sharePhoto();
+                MobclickAgent.onEvent(CameraFaceActivity.this, StatConstant.BtnSharePhoto);
                 break;
             case R.id.iv_turn_photo:
                 turnPhoto();
+                MobclickAgent.onEvent(CameraFaceActivity.this, StatConstant.BtnTurnPhoto);
                 break;
             case R.id.tv_camera_back:
                 finish();
@@ -336,17 +343,21 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 
     private void resetPhoto(){
         rlCamera3.setVisibility(View.INVISIBLE);
-        ivCameraTake.setBackgroundResource(R.drawable.btn_take_photo_gray);
+        ivCameraTake.setBackgroundResource(R.drawable.icon_camera_btn_gray);
         ivCameraTake.setText("3");
         rlCamera1.setVisibility(View.VISIBLE);
+
+        if(camera!=null){
+            camera.startPreview();
+        }
 
 //        if(cameraPosition == 0){
 //            cameraPosition = 1;
 //        }else{
 //            cameraPosition = 0;
 //        }
-
-        turnPhoto();
+//
+//        turnPhoto();
 
     }
 
@@ -488,16 +499,25 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 
         @Override
         public void onCancel(SHARE_MEDIA share_media) {
-            Toast.makeText(CameraFaceActivity.this,"分享取消啦", Toast.LENGTH_SHORT).show();
         }
     }
 
     class SavePictureTask extends AsyncTask<byte[], String, String> {
         @Override
         protected String doInBackground(byte[]... params) {
+
+            File sdRoot = Environment.getExternalStorageDirectory();
+            String dir = "/I'mbiaoqingbao/";
+            File mkDir = new File(sdRoot, dir);
+            if (!mkDir.exists())
+            {
+                mkDir.mkdirs();
+            }
+
+
             UUID uuid = UUID.randomUUID();
             String picName = uuid.toString();
-            File picture = new File("/sdcard/"+picName+".jpg");
+            File picture = new File(sdRoot,dir+picName+".jpg");
             try {
                 FileOutputStream fos = new FileOutputStream(picture.getPath());
                 fos.write(params[0]);
@@ -522,7 +542,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         ImageView ivExample = (ImageView)view.findViewById(R.id.iv_camera_final_photo_example);
 //        view.measure(screenWidth, screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height));
         Bitmap bmp = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
-        ivMe.setImageBitmap(adjustPhotoRotation(bmp, -90));
+        ivMe.setImageBitmap(adjustPhotoRotation(bmp, 270));
 
         if(pageType == Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL){
             ivExample.setImageResource(imgResId);
@@ -611,11 +631,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         resetPhoto();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        turnPhoto();
-    }
+
 
     @Override
     protected void onDestroy() {

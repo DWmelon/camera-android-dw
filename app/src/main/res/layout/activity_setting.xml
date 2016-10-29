@@ -23,6 +23,15 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="25dp"/>
 
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_right_arrow"
+            android:scaleType="fitXY"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -40,6 +49,14 @@
             android:textColor="@color/text_content_color"
             android:layout_centerVertical="true"
             android:layout_marginLeft="25dp"/>
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="20dp"
+            android:src="@drawable/icon_right_arrow"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"/>
 
     </RelativeLayout>
 

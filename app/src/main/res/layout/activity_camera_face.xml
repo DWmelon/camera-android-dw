@@ -13,19 +13,20 @@
         android:id="@+id/rl_camera1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/camera_bottom_content_height"
-        android:background="#e6e6e6"
+        android:background="@color/bg_take_phone"
         android:layout_alignParentBottom="true">
 
         <ImageView
-            android:id="@+id/tv_camera_back"
-            android:layout_width="wrap_content"
+            android:id="@+id/iv_turn_photo"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_reset_photo"
-            android:paddingLeft="15dp"
-            android:paddingRight="10dp"
+            android:src="@drawable/icon_turn_photo1"
+            android:scaleType="centerInside"
+            android:paddingLeft="20dp"
+            android:paddingRight="15dp"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"/>
 
@@ -39,19 +40,8 @@
             android:textSize="25sp"
             android:gravity="center"
             android:layout_centerInParent="true"
-            android:background="@drawable/btn_take_photo_gray"/>
+            android:background="@drawable/icon_camera_btn"/>
 
-        <ImageView
-            android:id="@+id/iv_turn_photo"
-            android:layout_width="80dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/icon_turn_photo1"
-            android:scaleType="fitCenter"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="10dp"/>
 
 
     </RelativeLayout>
@@ -62,7 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/camera_bottom_content_height"
         android:visibility="gone"
-        android:background="#e6e6e6"
+        android:background="@color/bg_take_phone"
         android:layout_alignParentBottom="true">
 
 
@@ -123,13 +113,49 @@
 
     <ImageView
         android:id="@+id/iv_compare_icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:src="@drawable/icon_test"
-        android:scaleType="fitCenter"
+        android:scaleType="fitEnd"
         android:layout_alignParentRight="true"
         android:layout_above="@+id/rl_camera1"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginRight="10dp"/>
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/rl_camera1"
+        android:background="@color/bg_take_phone"
+        />
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/rl_camera1"
+        android:background="@color/bg_take_phone"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/bg_take_phone">
+        <TextView
+            android:id="@+id/tv_camera_back"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="重选表情"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_primary_gray"/>
+    </RelativeLayout>
 
 </RelativeLayout>

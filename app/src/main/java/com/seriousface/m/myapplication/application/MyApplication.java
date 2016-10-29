@@ -28,7 +28,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+		Fresco.initialize(this);
         myApplication = getInstants();
+		
     }
 
     private static void init(){

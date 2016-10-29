@@ -8,6 +8,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.seriousface.m.myapplication.R;
+import com.seriousface.m.myapplication.constant.StatConstant;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by i on 2016/4/19.
@@ -47,10 +49,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             case R.id.rl_about_advice:
                 i = new Intent(SettingActivity.this,AdviceActivity.class);
                 startActivity(i);
+                MobclickAgent.onEvent(SettingActivity.this, StatConstant.PageAdvice);
                 break;
             case R.id.rl_about_contact:
                 i = new Intent(SettingActivity.this,AboutUsActivity.class);
                 startActivity(i);
+                MobclickAgent.onEvent(SettingActivity.this, StatConstant.PageAbout);
                 break;
 
         }

@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.seriousface.m.myapplication.R;
+import com.seriousface.m.myapplication.constant.StatConstant;
 import com.seriousface.m.myapplication.util.EmailUtil;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by i on 2016/4/19.
@@ -83,11 +85,13 @@ public class AdviceActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void sendEmail(){
-                m = new EmailUtil("375591580@qq.com", "ggrsufgachusbjjg");
+        MobclickAgent.onEvent(this, StatConstant.BtnSendMail);
+
+                m = new EmailUtil("3062016046@qq.com", "wheppmaurcstddfe");
 
                 String[] toArr = {"3062016046@qq.com"};
                 m.setTo(toArr);
-                m.setFrom("375591580@qq.com");
+                m.setFrom("3062016046@qq.com");
                 m.setSubject(mAdviceQQ.getText().toString().trim()+"的反馈");
                 m.setBody(mAdviceContent.getText().toString().trim());
                 try {

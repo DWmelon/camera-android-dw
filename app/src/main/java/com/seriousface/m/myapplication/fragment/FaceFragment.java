@@ -15,6 +15,8 @@ import com.seriousface.m.myapplication.R;
 import com.seriousface.m.myapplication.activity.CameraFaceActivity;
 import com.seriousface.m.myapplication.adapter.GridViewAdapter;
 import com.seriousface.m.myapplication.constant.Constant;
+import com.seriousface.m.myapplication.constant.StatConstant;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by Administrator on 2016/4/14.
@@ -61,7 +63,18 @@ public class FaceFragment extends Fragment implements AdapterView.OnItemClickLis
         Intent i = new Intent(getActivity(), CameraFaceActivity.class);
         i.putExtra(Constant.KEY_PIC_CHOOSE_TYPE, Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL);
         int ids = (int)parent.getItemAtPosition(position);
-        i.putExtra(Constant.KEY_PIC_CHOOSE_DATA,ids);
+        i.putExtra(Constant.KEY_PIC_CHOOSE_DATA, ids);
         getActivity().startActivity(i);
+
+        if(pageType.equals(Constant.VALUE_PIC_PAGE_TYPE_STAR)){
+            MobclickAgent.onEvent(getActivity(), StatConstant.PageTypeChooseOfficialStar);
+        }else if(pageType.equals(Constant.VALUE_PIC_PAGE_TYPE_XIONG_BEN)){
+            MobclickAgent.onEvent(getActivity(), StatConstant.PageTypeChooseOfficialXB);
+        }else if(pageType.equals(Constant.VALUE_PIC_PAGE_TYPE_EMOJI)){
+            MobclickAgent.onEvent(getActivity(), StatConstant.PageTypeChooseOfficialEmoji);
+        }
+
+        MobclickAgent.onEvent(getActivity(), StatConstant.PageTakePhone);
+
     }
 }
