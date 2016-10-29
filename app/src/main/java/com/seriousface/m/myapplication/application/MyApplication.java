@@ -2,6 +2,7 @@ package com.seriousface.m.myapplication.application;
 
 import android.app.Application;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.seriousface.m.myapplication.wxapi.WXShareManager;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
