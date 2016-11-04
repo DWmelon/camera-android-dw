@@ -83,7 +83,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
     int pageType;
     int imgResId;
     Uri imgUrl;
-    int cameraPosition = 0;
+//    int cameraPosition = 0;
     int originalNum = -1;
     WXShareManager manager;
 
@@ -173,17 +173,17 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 //                            camera = Camera.open(i);
 //                        }
 //                    }
-                    if(cameraPosition == 1){
-                        cameraPosition = 0;
-                    }else{
-                        cameraPosition = 1;
-                    }
+//                    if(cameraPosition == 1){
+//                        cameraPosition = 0;
+//                    }else{
+//                        cameraPosition = 1;
+//                    }
                         turnPhoto();
 
                 }
-                if (camera == null) {
-                    camera = Camera.open();
-                }
+//                if (camera == null) {
+//                    camera = Camera.open();
+//                }
 
 //                try {
 //                    //设置预览监听
@@ -377,22 +377,27 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 
     private void turnPhoto(){
         //切换前后摄像头
-        int cameraCount = 0;
+        int cameraCount = Camera.getNumberOfCameras();//得到摄像头的个数
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        cameraCount = Camera.getNumberOfCameras();//得到摄像头的个数
+
+        //获得当前前置还是后置，拿不到就设置后置
+        int NOW_POSITION = Camera.CameraInfo.CAMERA_FACING_BACK;
+
+
+        if(camera!=null){
+            camera.stopPreview();//停掉原来摄像头的预览
+            camera.release();//释放资源
+            camera = null;//取消原来摄像头
+        }
+
 
         for(int i = 0; i < cameraCount;i++) {
             Camera.getCameraInfo(i, cameraInfo);//得到每一个摄像头的信息
-            if(cameraPosition == 1 && cameraInfo.facing  == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                //现在是后置，变更为前置
-                //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
-                if(camera!=null){
-                    camera.stopPreview();//停掉原来摄像头的预览
-                    camera.release();//释放资源
-                    camera = null;//取消原来摄像头
-                }
+            if(cameraInfo.facing  == NOW_POSITION) {
 
-                camera = Camera.open(i);//打开当前选中的摄像头
+                //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
+
+                camera = Camera.open();//打开当前选中的摄像头
 
                 Camera.Parameters parameters = camera.getParameters();
                 parameters.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
@@ -422,19 +427,11 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
                     e.printStackTrace();
                 }
                 camera.startPreview();//开始预览
-                cameraPosition = 0;
                 break;
-
             }
-            if(cameraPosition == 0 && cameraInfo.facing  == Camera.CameraInfo.CAMERA_FACING_BACK){
+            if(cameraInfo.facing  == Camera.CameraInfo.CAMERA_FACING_BACK){
                 //现在是前置， 变更为后置
                 //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
-                if(camera!=null){
-                    camera.stopPreview();//停掉原来摄像头的预览
-                    camera.release();//释放资源
-                    camera = null;//取消原来摄像头
-                }
-
                 camera = Camera.open(i);//打开当前选中的摄像头
 
                 Camera.Parameters parameters = camera.getParameters();
@@ -464,7 +461,6 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
                     e.printStackTrace();
                 }
                 camera.startPreview();//开始预览
-                cameraPosition = 1;
                 break;
             }
 
