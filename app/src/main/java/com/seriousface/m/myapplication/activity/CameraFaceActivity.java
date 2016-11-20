@@ -1,8 +1,16 @@
 package com.seriousface.m.myapplication.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,6 +23,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v13.app.ActivityCompat;
+import android.support.v13.app.FragmentCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,41 +64,47 @@ import java.util.UUID;
 /**
  * Created by Administrator on 2016/4/15.
  */
-public class CameraFaceActivity extends BaseActivity implements View.OnClickListener{
+public class CameraFaceActivity extends BaseActivity implements View.OnClickListener ,FragmentCompat.OnRequestPermissionsResultCallback{
 
-    int screenWidth;
-    int screenHeight;
+    private int screenWidth;
+    private int screenHeight;
 
-    SurfaceView surfaceView;
-    SurfaceHolder surfaceHolder;
-    Camera camera;
-    float previewRate = -1f;
-    byte[] photoData;
-    Bitmap shardBitmap;
-    TextView ivCameraTake;
-    ImageView ivExampleIcon;
-    UMShareAPI mShareAPI;
-    SHARE_MEDIA[] displaylist = new SHARE_MEDIA[]
+    private SurfaceView surfaceView;
+    private SurfaceHolder surfaceHolder;
+    private Camera camera;
+    private float previewRate = -1f;
+    private byte[] photoData;
+    private Bitmap shardBitmap;
+    private TextView ivCameraTake;
+    private ImageView ivExampleIcon;
+    private UMShareAPI mShareAPI;
+    private SHARE_MEDIA[] displaylist = new SHARE_MEDIA[]
             {
                     SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,SHARE_MEDIA.SINA,
                     SHARE_MEDIA.QQ
             };
 
-    ImageView ivCameraTurn;
-    RelativeLayout rlCamera1;
-    RelativeLayout rlCamera3;
-    ImageView tvCameraSave;
-    ImageView tvCameraReset;
-    TextView ivBack;
-    RelativeLayout tvCameraShare;
+    private ImageView ivCameraTurn;
+    private RelativeLayout rlCamera1;
+    private RelativeLayout rlCamera3;
+    private ImageView tvCameraSave;
+    private ImageView tvCameraReset;
+    private TextView ivBack;
+    private RelativeLayout tvCameraShare;
 
-    int pageType;
-    int imgResId;
-    Uri imgUrl;
+    private int pageType;
+    private int imgResId;
+    private Uri imgUrl;
 //    int cameraPosition = 0;
-    int originalNum = -1;
-    WXShareManager manager;
+    private int originalNum = -1;
+    private WXShareManager manager;
 
+    private int NOW_POSITION = Camera.CameraInfo.CAMERA_FACING_BACK;
+
+    private final int CAMERA_FRONT = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private final int CAMERA_BACK = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
+    private static final String FRAGMENT_DIALOG = "dialog";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +165,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
             showError();
         }
 
+
         ivCameraTake.setBackgroundResource(R.drawable.icon_camera_btn_gray);
         ivCameraTake.setText("3");
 
@@ -166,67 +185,12 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
             public void surfaceCreated(SurfaceHolder holder) {
                 //获取camera对象
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-//                    for (int i = 0; i < Camera.getNumberOfCameras(); i++) {
-//                        Camera.CameraInfo info = new Camera.CameraInfo();
-//                        Camera.getCameraInfo(i, info);
-//                        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-//                            camera = Camera.open(i);
-//                        }
-//                    }
-//                    if(cameraPosition == 1){
-//                        cameraPosition = 0;
-//                    }else{
-//                        cameraPosition = 1;
-//                    }
                         turnPhoto();
-
                 }
-//                if (camera == null) {
-//                    camera = Camera.open();
-//                }
-
-//                try {
-//                    //设置预览监听
-//                    camera.setPreviewDisplay(holder);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    camera.release();
-//                    camera=null;
-//                    System.out.println("camera.release");
-//                }
-//                Camera.Parameters parameters = camera.getParameters();
-
-
-//                parameters = camera.getParameters();
-//                parameters.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
-//                CamParaUtil.getInstance().printSupportPictureSize(parameters);
-//                CamParaUtil.getInstance().printSupportPreviewSize(parameters);
-//                //设置PreviewSize和PictureSize
-//                Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
-//                        parameters.getSupportedPictureSizes(), previewRate, 800);
-//                parameters.setPictureSize(pictureSize.width, pictureSize.height);
-//                Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
-//                        parameters.getSupportedPreviewSizes(), previewRate, 800);
-//                parameters.setPreviewSize(previewSize.width, previewSize.height);
-//
-//                camera.setDisplayOrientation(90);
-//
-//                CamParaUtil.getInstance().printSupportFocusMode(parameters);
-//                List<String> focusModes = parameters.getSupportedFocusModes();
-//                if (focusModes.contains("continuous-video")) {
-//                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-//                }
-//                camera.setParameters(parameters);
-//
-//                //启动摄像头预览
-//                camera.startPreview();
-
-
             }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
                 System.out.println("camera.startpreview");
             }
 
@@ -270,6 +234,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
                 MobclickAgent.onEvent(CameraFaceActivity.this, StatConstant.BtnSharePhoto);
                 break;
             case R.id.iv_turn_photo:
+                turnPhotoFlag();
                 turnPhoto();
                 MobclickAgent.onEvent(CameraFaceActivity.this, StatConstant.BtnTurnPhoto);
                 break;
@@ -334,6 +299,13 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         valueAnimator.start();
     }
 
+    private void turnPhotoFlag(){
+        if(NOW_POSITION == CAMERA_FRONT){
+            NOW_POSITION = CAMERA_BACK;
+        }else{
+            NOW_POSITION = CAMERA_FRONT;
+        }
+    }
 
     private void savePhoto(){
         writePhotoToPhone();
@@ -351,13 +323,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
             camera.startPreview();
         }
 
-//        if(cameraPosition == 0){
-//            cameraPosition = 1;
-//        }else{
-//            cameraPosition = 0;
-//        }
-//
-//        turnPhoto();
+        turnPhoto();
 
     }
 
@@ -375,14 +341,10 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 
     }
 
+
+
+
     private void turnPhoto(){
-        //切换前后摄像头
-        int cameraCount = Camera.getNumberOfCameras();//得到摄像头的个数
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-
-        //获得当前前置还是后置，拿不到就设置后置
-        int NOW_POSITION = Camera.CameraInfo.CAMERA_FACING_BACK;
-
 
         if(camera!=null){
             camera.stopPreview();//停掉原来摄像头的预览
@@ -391,93 +353,121 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         }
 
 
-        for(int i = 0; i < cameraCount;i++) {
+        int cameraCount = Camera.getNumberOfCameras();//得到摄像头的个数
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        int i = 0;
+        for(;i < cameraCount;i++) {
             Camera.getCameraInfo(i, cameraInfo);//得到每一个摄像头的信息
             if(cameraInfo.facing  == NOW_POSITION) {
-
-                //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
-
-                camera = Camera.open();//打开当前选中的摄像头
-
-                Camera.Parameters parameters = camera.getParameters();
-                parameters.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
-                CamParaUtil.getInstance().printSupportPictureSize(parameters);
-                CamParaUtil.getInstance().printSupportPreviewSize(parameters);
-                //设置PreviewSize和PictureSize
-                Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
-                        parameters.getSupportedPictureSizes(), previewRate, 800);
-                parameters.setPictureSize(pictureSize.width, pictureSize.height);
-                Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
-                        parameters.getSupportedPreviewSizes(), previewRate, 800);
-                parameters.setPreviewSize(previewSize.width, previewSize.height);
-
-                camera.setDisplayOrientation(90);
-
-                CamParaUtil.getInstance().printSupportFocusMode(parameters);
-                List<String> focusModes = parameters.getSupportedFocusModes();
-                if (focusModes.contains("continuous-video")) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-                }
-                camera.setParameters(parameters);
-
-                try {
-                    camera.setPreviewDisplay(surfaceHolder);//通过surfaceview显示取景画面
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                camera.startPreview();//开始预览
                 break;
             }
-            if(cameraInfo.facing  == Camera.CameraInfo.CAMERA_FACING_BACK){
-                //现在是前置， 变更为后置
-                //代表摄像头的方位，CAMERA_FACING_FRONT前置      CAMERA_FACING_BACK后置
-                camera = Camera.open(i);//打开当前选中的摄像头
+        }
 
-                Camera.Parameters parameters = camera.getParameters();
-                parameters.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
-                CamParaUtil.getInstance().printSupportPictureSize(parameters);
-                CamParaUtil.getInstance().printSupportPreviewSize(parameters);
-                //设置PreviewSize和PictureSize
-                Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
-                        parameters.getSupportedPictureSizes(), previewRate, 800);
-                parameters.setPictureSize(pictureSize.width, pictureSize.height);
-                Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
-                        parameters.getSupportedPreviewSizes(), previewRate, 800);
-                parameters.setPreviewSize(previewSize.width, previewSize.height);
+        //找不到对应的摄像头
+        if(i>=cameraCount){
+            Toast.makeText(CameraFaceActivity.this,"抱歉~无法打开摄像头",Toast.LENGTH_LONG).show();
+            return;
+        }
 
-                camera.setDisplayOrientation(90);
 
-                CamParaUtil.getInstance().printSupportFocusMode(parameters);
-                List<String> focusModes = parameters.getSupportedFocusModes();
-                if (focusModes.contains("continuous-video")) {
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-                }
+        openCamera(i);
 
-                try {
-                    camera.setPreviewDisplay(surfaceHolder);//通过surfaceview显示取景画面
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                camera.startPreview();//开始预览
-                break;
+    }
+
+    private void openCamera(int flag){
+        if (ContextCompat.checkSelfPermission(CameraFaceActivity.this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestCameraPermission();
+            return;
+        }
+        camera = Camera.open(flag);//打开当前选中的摄像头
+
+        Camera.Parameters parameters = camera.getParameters();
+        parameters.setPictureFormat(PixelFormat.JPEG);//设置拍照后存储的图片格式
+        CamParaUtil.getInstance().printSupportPictureSize(parameters);
+        CamParaUtil.getInstance().printSupportPreviewSize(parameters);
+        //设置PreviewSize和PictureSize
+        Camera.Size pictureSize = CamParaUtil.getInstance().getPropPictureSize(
+                parameters.getSupportedPictureSizes(), previewRate, 800);
+        parameters.setPictureSize(pictureSize.width, pictureSize.height);
+        Camera.Size previewSize = CamParaUtil.getInstance().getPropPreviewSize(
+                parameters.getSupportedPreviewSizes(), previewRate, 800);
+        parameters.setPreviewSize(previewSize.width, previewSize.height);
+
+        camera.setDisplayOrientation(90);
+
+        CamParaUtil.getInstance().printSupportFocusMode(parameters);
+        List<String> focusModes = parameters.getSupportedFocusModes();
+        if (focusModes.contains("continuous-video")) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+        }
+        camera.setParameters(parameters);
+
+        try {
+            camera.setPreviewDisplay(surfaceHolder);//通过surfaceview显示取景画面
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        camera.startPreview();//开始预览
+
+    }
+
+    private void requestCameraPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(CameraFaceActivity.this, Manifest.permission.CAMERA)) {
+            new ConfirmationDialog().show(getFragmentManager(), FRAGMENT_DIALOG);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                ErrorDialog.newInstance("需要获取摄像权限")
+                        .show(getFragmentManager(), FRAGMENT_DIALOG);
             }
-
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
     private void writePhotoToPhone(){
-        //旋转180
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
-        //adjustPhotoRotation(bitmap, 180);
-        //转成byte[]
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
-//        photoData = baos.toByteArray();
-
         new SavePictureTask().execute(photoData);
+    }
+
+    private class SavePictureTask extends AsyncTask<byte[], String, String> {
+        @Override
+        protected String doInBackground(byte[]... params) {
+
+            File sdRoot = Environment.getExternalStorageDirectory();
+            String dir = "/face/";
+            File mkDir = new File(sdRoot, dir);
+            if (!mkDir.exists())
+            {
+                if(!mkDir.mkdirs()) {
+                    Toast.makeText(CameraFaceActivity.this,"创建文件失败~",Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+            UUID uuid = UUID.randomUUID();
+            String picName = uuid.toString();
+            File picture = new File(sdRoot,dir+picName+".jpg");
+            try {
+                FileOutputStream fos = new FileOutputStream(picture.getPath());
+                fos.write(params[0]);
+                fos.flush();
+                fos.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Log.e("", "照片保存完成");
+            return null;
+        }
     }
 
     private class ShardListener implements UMShareListener{
@@ -498,35 +488,6 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         }
     }
 
-    class SavePictureTask extends AsyncTask<byte[], String, String> {
-        @Override
-        protected String doInBackground(byte[]... params) {
-
-            File sdRoot = Environment.getExternalStorageDirectory();
-            String dir = "/I'mbiaoqingbao/";
-            File mkDir = new File(sdRoot, dir);
-            if (!mkDir.exists())
-            {
-                mkDir.mkdirs();
-            }
-
-
-            UUID uuid = UUID.randomUUID();
-            String picName = uuid.toString();
-            File picture = new File(sdRoot,dir+picName+".jpg");
-            try {
-                FileOutputStream fos = new FileOutputStream(picture.getPath());
-                fos.write(params[0]);
-                fos.flush();
-                fos.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Log.e("", "照片保存完成");
-            return null;
-        }
-    }
-
     private void createFinalPhoto(){
         final View view;
         if(pageType == Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL){
@@ -538,7 +499,7 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
         ImageView ivExample = (ImageView)view.findViewById(R.id.iv_camera_final_photo_example);
 //        view.measure(screenWidth, screenHeight - getResources().getDimensionPixelSize(R.dimen.camera_bottom_content_height));
         Bitmap bmp = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
-        ivMe.setImageBitmap(adjustPhotoRotation(bmp, 270));
+        ivMe.setImageBitmap(adjustPhotoRotation(bmp, 90));
 
         if(pageType == Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL){
             ivExample.setImageResource(imgResId);
@@ -558,15 +519,27 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
 
     }
 
-
+    private Bitmap adjustPhotoRotation(Bitmap bm, final int orientationDegree)
+    {
+        Matrix m = new Matrix();
+        m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
+        //缩放
+//        m.postScale(1, 1);
+        try {
+            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
+            Log.d("turn_photo","yes");
+            bm.recycle();
+            return bm1;
+        } catch (OutOfMemoryError ex) {
+        }
+        Log.d("turn_photo","no");
+        return null;
+    }
 
     /**
      * 将view转成bitmap
-     *
-     * @param view
-     * @return
      */
-    public Bitmap loadBitmapFromView(View view) {
+    private Bitmap loadBitmapFromView(View view) {
         if (view == null) {
             return null;
         }
@@ -601,24 +574,68 @@ public class CameraFaceActivity extends BaseActivity implements View.OnClickList
     }
 
 
-    public Bitmap adjustPhotoRotation(Bitmap bm, final int orientationDegree)
-    {
-        Matrix m = new Matrix();
-        m.setRotate(orientationDegree, (float) bm.getWidth() / 2, (float) bm.getHeight() / 2);
-        m.postScale(-1, 1);
-        try {
-            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, true);
-            Log.d("turnphoto","yes");
-            bm.recycle();
-            return bm1;
-        } catch (OutOfMemoryError ex) {
+    /**
+     * Shows an error message dialog.
+     */
+    public static class ErrorDialog extends DialogFragment {
+
+        private static final String ARG_MESSAGE = "message";
+
+        public static ErrorDialog newInstance(String message) {
+            ErrorDialog dialog = new ErrorDialog();
+            Bundle args = new Bundle();
+            args.putString(ARG_MESSAGE, message);
+            dialog.setArguments(args);
+            return dialog;
         }
-        Log.d("turnphoto","no");
-        return null;
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Activity activity = getActivity();
+            return new AlertDialog.Builder(activity)
+                    .setMessage(getArguments().getString(ARG_MESSAGE))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            activity.finish();
+                        }
+                    })
+                    .create();
+        }
+
     }
 
+    /**
+     * Shows OK/Cancel confirmation dialog about camera permission.
+     */
+    public static class ConfirmationDialog extends DialogFragment {
 
-
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Activity parent = getActivity();
+            return new AlertDialog.Builder(getActivity())
+                    .setMessage("需要获取摄像权限")
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(parent,
+                                    new String[]{Manifest.permission.CAMERA},
+                                    REQUEST_CAMERA_PERMISSION);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Activity activity = getActivity();
+                                    if (activity != null) {
+                                        activity.finish();
+                                    }
+                                }
+                            })
+                    .create();
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
