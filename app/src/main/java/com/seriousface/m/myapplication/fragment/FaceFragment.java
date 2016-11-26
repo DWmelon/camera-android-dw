@@ -1,10 +1,6 @@
 package com.seriousface.m.myapplication.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,12 +9,10 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.seriousface.m.myapplication.R;
-import com.seriousface.m.myapplication.View.DividerGridItemDecoration;
 import com.seriousface.m.myapplication.activity.Camera2FaceActivity;
+import com.seriousface.m.myapplication.view.DividerGridItemDecoration;
 import com.seriousface.m.myapplication.activity.CameraFaceActivity;
 import com.seriousface.m.myapplication.adapter.FaceAdapter;
 import com.seriousface.m.myapplication.constant.Constant;
@@ -75,7 +69,7 @@ public class FaceFragment extends Fragment{
                     i = new Intent(getActivity(), CameraFaceActivity.class);
                 } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     // your code using Camera2 API here - is api 21 or higher
-                    i = new Intent(getActivity(), CameraFaceActivity.class);
+                    i = new Intent(getActivity(), Camera2FaceActivity.class);
                 }
 
                 i.putExtra(Constant.KEY_PIC_CHOOSE_TYPE, Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL);

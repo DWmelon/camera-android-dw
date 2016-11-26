@@ -15,4 +15,13 @@
 
     <dimen name="photo_type_width">144dp</dimen>
     <dimen name="photo_type_height">72dp</dimen>
+
+    <!-- 设置设置项每项文字的大小 -->
+    <dimen name="personal_eamil_text_size">15sp</dimen>
+    <dimen name="popupwindow_width">105dip</dimen>
+    <dimen name="popupwindow_height">22dip</dimen>
+
+    <dimen name="option_item_height">49dp</dimen>
+    <dimen name="option_item_summery_txt_size">10sp</dimen>
+
 </resources>

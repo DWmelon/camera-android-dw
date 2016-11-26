@@ -16,4 +16,11 @@
     <color name="bg_take_phone">#e6e6e6</color>
 
     <color name="primary_top_bar_line">#dadada</color>
+
+    <!-- 分割线 黄色 -->
+    <color name="popup_title_color">#c9cdd1</color>
+    <color name="advance_setting_item_bg">#f8f8f8</color>
+
+    <color name="common_title_text">#565555</color>
+
 </resources>

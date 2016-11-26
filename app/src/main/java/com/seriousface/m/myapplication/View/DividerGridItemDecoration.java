@@ -1,4 +1,4 @@
-package com.seriousface.m.myapplication.View;
+package com.seriousface.m.myapplication.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;

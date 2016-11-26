@@ -1,0 +1,93 @@
+package com.seriousface.m.myapplication.listener;
+
+import android.annotation.TargetApi;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureRequest;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+
+import com.seriousface.m.myapplication.R;
+import com.seriousface.m.myapplication.callback.PreviewSessionCallback;
+import com.seriousface.m.myapplication.fragment.Camera2FaceFragment;
+import com.seriousface.m.myapplication.view.AnimationTextView;
+
+/**
+ * Created by yuyidong on 14-12-18.
+ */
+@TargetApi(21)
+public class FlashItemClickListener implements AdapterView.OnItemClickListener {
+    private CaptureRequest.Builder mPreviewBuilder;
+    private CameraCaptureSession mCameraCaptureSession;
+    private Handler mHandler;
+    private PopupWindow mWindow;
+    private ImageView mBtnFlash;
+    private PreviewSessionCallback mPreviewSessionCallback;
+    private AnimationTextView mAnimationTextView;
+
+    public FlashItemClickListener(CaptureRequest.Builder mPreviewBuilder, CameraCaptureSession mCameraCaptureSession, Handler mHandler, PopupWindow mWindow, ImageView mBtnFlash, PreviewSessionCallback mPreviewSessionCallback, AnimationTextView mAnimationTextView) {
+        this.mPreviewBuilder = mPreviewBuilder;
+        this.mCameraCaptureSession = mCameraCaptureSession;
+        this.mHandler = mHandler;
+        this.mWindow = mWindow;
+        this.mBtnFlash = mBtnFlash;
+        this.mPreviewSessionCallback = mPreviewSessionCallback;
+        this.mAnimationTextView = mAnimationTextView;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mPreviewBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+        switch (position) {
+            case 0:
+                mBtnFlash.setImageResource(R.drawable.btn_flash_off);
+                mPreviewBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
+                mPreviewBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
+                mAnimationTextView.start("OFF", Camera2FaceFragment.WINDOW_TEXT_DISAPPEAR);
+                break;
+            case 1:
+                mBtnFlash.setImageResource(R.drawable.btn_flash_on);
+                mPreviewBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
+                mPreviewBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_SINGLE);
+                mAnimationTextView.start("SINGLE", Camera2FaceFragment.WINDOW_TEXT_DISAPPEAR);
+                break;
+            case 2:
+                mBtnFlash.setImageResource(R.drawable.btn_flash_all_on);
+                mPreviewBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON);
+                mPreviewBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_TORCH);
+                mAnimationTextView.start("TORCH", Camera2FaceFragment.WINDOW_TEXT_DISAPPEAR);
+                break;
+            case 3:
+                mBtnFlash.setImageResource(R.drawable.btn_flash_auto);
+                mPreviewBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                mAnimationTextView.start("AUTO_FLASH", Camera2FaceFragment.WINDOW_TEXT_DISAPPEAR);
+                break;
+            case 4:
+                mBtnFlash.setImageResource(R.drawable.btn_flash_auto);
+                mPreviewBuilder.set(CaptureRequest.CONTROL_AE_MODE, CameraMetadata.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+                mAnimationTextView.start("ALWAYS_FLASH", Camera2FaceFragment.WINDOW_TEXT_DISAPPEAR);
+                break;
+        }
+        updatePreview();
+        mWindow.dismiss();
+    }
+
+    /**
+     * 更新预览
+     */
+    private void updatePreview() {
+        try {
+            mCameraCaptureSession.setRepeatingRequest(mPreviewBuilder.build(), mPreviewSessionCallback, mHandler);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("updatePreview", "ExceptionExceptionException");
+        }
+    }
+}

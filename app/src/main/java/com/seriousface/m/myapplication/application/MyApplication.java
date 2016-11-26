@@ -3,6 +3,9 @@ package com.seriousface.m.myapplication.application;
 import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.seriousface.m.myapplication.wxapi.WXShareManager;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -31,7 +34,13 @@ public class MyApplication extends Application {
         super.onCreate();
 		Fresco.initialize(this);
         myApplication = getInstants();
-		
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                .denyCacheImageMultipleSizesInMemory()
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .writeDebugLogs()
+                .build();
+        ImageLoader.getInstance().init(config);
     }
 
     private static void init(){
@@ -40,6 +49,8 @@ public class MyApplication extends Application {
         PlatformConfig.setSinaWeibo("1289740435","2ba9244d9cb46a501f29cefa081f40cf");
         //新浪微博 appkey appsecret
         PlatformConfig.setQQZone("1105343676", "PlYBLtkEJ01sydmT");
+
+
     }
 
 
