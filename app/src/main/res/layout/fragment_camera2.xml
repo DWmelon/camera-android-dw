@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary_black">
 
     <com.seriousface.m.myapplication.view.MyTextureView
         android:id="@+id/textureview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/primary_black"
         />
+
+    <View
+        android:id="@+id/v_face_v2_status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/primary_black"/>
+
+    <View
+        android:id="@+id/v_face_v2_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/primary_black"/>
 
     <LinearLayout
         android:id="@+id/layout_menu"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/v_face_v2_status_bar"
         android:layout_margin="5dip"
         android:gravity="center"
         android:orientation="horizontal">
@@ -126,7 +142,7 @@
         android:id="@+id/layout_bottom"
         android:layout_width="fill_parent"
         android:layout_height="70dip"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/v_face_v2_navigation_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dip">
 

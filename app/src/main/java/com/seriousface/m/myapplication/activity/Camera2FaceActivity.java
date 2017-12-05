@@ -15,6 +15,8 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Size;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;

@@ -2,6 +2,7 @@ package com.seriousface.m.myapplication.activity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
@@ -9,8 +10,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -26,6 +32,7 @@ import com.seriousface.m.myapplication.util.EmailUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -36,12 +43,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     ImageView ivTopView;
 
     ImageView tvAboutUs;
-
+    View main;
     private int VALUE_INTENT_TO_OWN = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        main = LayoutInflater.from(this).inflate(R.layout.activity_main, null);
+//        main.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//        main.setOnClickListener(this);
         setContentView(R.layout.activity_main);
+
+//        DisplayMetrics dm = new DisplayMetrics();
+//        取得窗口属性
+//        getWindowManager().getDefaultDisplay().getMetrics(dm);
+//
+//        窗口的宽度
+//        int screenWidth = dm.widthPixels;
+//
+//        窗口高度
+//        int screenHeight = dm.heightPixels;
+
+
 
         tvOfficial = (RelativeLayout)findViewById(R.id.tv_main_official);
         tvOwn = (RelativeLayout)findViewById(R.id.tv_main_own);
@@ -56,6 +78,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+//            int i = main.getSystemUiVisibility();
+//            if (i == View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) {
+//                main.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+//            } else if (i == View.SYSTEM_UI_FLAG_VISIBLE){
+//                main.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+//            } else if (i == View.SYSTEM_UI_FLAG_LOW_PROFILE) {
+//                main.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//            }
         Intent i;
         switch (v.getId()){
             case R.id.tv_main_official:
@@ -74,7 +104,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 MainActivity.this.startActivity(i);
                 MobclickAgent.onEvent(MainActivity.this, StatConstant.PageSetting);
                 break;
-        }                                                                                                                                        
+        }
     }
 
 

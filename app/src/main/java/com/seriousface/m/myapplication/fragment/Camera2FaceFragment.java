@@ -74,6 +74,8 @@ import com.seriousface.m.myapplication.listener.FlashItemClickListener;
 import com.seriousface.m.myapplication.listener.JpegReaderListener;
 import com.seriousface.m.myapplication.listener.SenseItemClickListener;
 import com.seriousface.m.myapplication.listener.TextureViewTouchEvent;
+import com.seriousface.m.myapplication.util.DisplayUtil;
+import com.seriousface.m.myapplication.util.ScreenHeightUtil;
 import com.seriousface.m.myapplication.view.AnimationImageView;
 import com.seriousface.m.myapplication.view.AnimationTextView;
 import com.seriousface.m.myapplication.view.AwbSeekBar;
@@ -84,6 +86,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by melon on 2016/11/20.
@@ -343,6 +346,8 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
         } else {
             mCameraId = PreferenceHelper.getCurrentCameraid(getActivity());
         }
+
+
         //初始化sharedPreference
         mSp = getActivity().getSharedPreferences("currentcamera" + mCameraId, Context.MODE_PRIVATE);
         mEditor = mSp.edit();
@@ -352,12 +357,25 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_camera2, null);
+        initUIHeight(v);
         initAnimation();
         initUIAndListener(v);
         initSeekBarValue();
         initShutter();
         initFocusImage();
         return v;
+    }
+
+    private void initUIHeight(View view){
+        View statusBar = view.findViewById(R.id.v_face_v2_status_bar);
+        RelativeLayout.LayoutParams statusParams = (RelativeLayout.LayoutParams) statusBar.getLayoutParams();
+        statusParams.height = ScreenHeightUtil.getStatusHeight(getActivity());
+        statusBar.setLayoutParams(statusParams);
+
+        View navigationBar = view.findViewById(R.id.v_face_v2_navigation_bar);
+        RelativeLayout.LayoutParams navigationParams = (RelativeLayout.LayoutParams) navigationBar.getLayoutParams();
+        navigationParams.height = ScreenHeightUtil.getBottomStatusHeight(getActivity());
+        navigationBar.setLayoutParams(navigationParams);
     }
 
     /**
@@ -547,7 +565,7 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
         int sizeWidth = mSp.getInt("format_" + mFormat + "_pictureSize_width", 1280);
         int sizeHeight = mSp.getInt("format_" + mFormat + "_pictureSize_height", 960);
         //得到ImageReader对象,5为maxImage，放入队列里面的最大连拍张数(应该是这个意思)
-        mImageReader = ImageReader.newInstance(mlargest.getWidth(), mlargest.getHeight(), mFormat, 2);
+        mImageReader = ImageReader.newInstance(mPreviewSize.getHeight(), mPreviewSize.getWidth(), mFormat, 2);
         if (mFormat == ImageFormat.JPEG) {
             mImageReader.setOnImageAvailableListener(new JpegReaderListener(), mHandler);
         } else if (mFormat == ImageFormat.RAW_SENSOR) {
@@ -561,8 +579,9 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
         mSurface = new Surface(texture);
         //得到surface
         mOutputSurfaces = new ArrayList<Surface>(2);
-        mOutputSurfaces.add(mImageReader.getSurface());
         mOutputSurfaces.add(mSurface);
+        mOutputSurfaces.add(mImageReader.getSurface());
+
     }
 
     /**
@@ -638,6 +657,17 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
     private void openCamera(int viewWidth, int viewHeight) throws CameraAccessException, InterruptedException {
         initHandler();//初始化子线程和handler
         //获得camera服务
+//        int viewWidth;
+//        int viewHeight;
+//        List<Integer> list = DisplayUtil.getScreenHeight(getActivity());
+//        if (DisplayUtil.getScreenOrientation(getActivity())){
+//            viewWidth = list.get(0);
+//            viewHeight = list.get(1);
+//        }else{
+//            viewWidth = list.get(1);
+//            viewHeight = list.get(0);
+//        }
+
         mCameraManager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
         setUpCameraOutputs(viewWidth, viewHeight);
         configureTransform(viewWidth, viewHeight);
@@ -667,6 +697,7 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
         //流配置
         StreamConfigurationMap map = mCameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         if (mCameraId.equals("0") && mFormat == ImageFormat.JPEG) {
+
             mlargest = Collections.max(Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)), new CompareSizesByArea());
             mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, mlargest);
         } else if (mCameraId.equals("0") && mFormat == ImageFormat.RAW_SENSOR) {
@@ -691,8 +722,8 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
         int w = aspectRatio.getWidth();
         int h = aspectRatio.getHeight();
         for (Size option : choices) {
-            if (option.getHeight() == option.getWidth() * h / w &&
-                    option.getWidth() >= width && option.getHeight() >= height) {
+            if (option.getWidth() >= height && option.getHeight() >= width &&
+                    (double)option.getWidth()/option.getHeight()<=(double)height/width) {
                 bigEnough.add(option);
             }
         }
@@ -817,12 +848,9 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
     private static final String FRAGMENT_DIALOG = "dialog";
 
     private void requestCameraPermission() {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
-                    android.support.v13.app.ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA},
-                            REQUEST_CAMERA_PERMISSION);
-
-
+        int result = ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA);
+        if (result != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
         } else {
             try {
                 mCameraManager.openCamera(mCameraId, mCameraDeviceStateCallback, mHandler);
@@ -835,19 +863,24 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.length != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 CameraFaceActivity.ErrorDialog.newInstance("需要获取摄像权限")
                         .show(getFragmentManager(), FRAGMENT_DIALOG);
             }else {
                 try {
-                    mCameraManager.openCamera(mCameraId, mCameraDeviceStateCallback, mHandler);
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        //获取权限失败关闭页面
+                        getActivity().finish();
+                    }else{
+                        //获取权限成功打开摄像头
+                        mCameraManager.openCamera(mCameraId, mCameraDeviceStateCallback, mHandler);
+                    }
                 } catch (CameraAccessException e) {
                     e.printStackTrace();
                 }
             }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 
@@ -935,6 +968,7 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
             Log.i("SurfaceTextureListener", "onSurfaceTextureAvailable");
             mToPreviewWidth = i;
             mToPreviewHeight = i2;
+//            mToPreviewHeight =
             try {
                 openCamera(i, i2);//打开相机
             } catch (CameraAccessException e) {

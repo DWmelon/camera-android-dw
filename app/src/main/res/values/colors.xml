@@ -23,4 +23,6 @@
 
     <color name="common_title_text">#565555</color>
 
+    <color name="primary_black">#000000</color>
+
 </resources>

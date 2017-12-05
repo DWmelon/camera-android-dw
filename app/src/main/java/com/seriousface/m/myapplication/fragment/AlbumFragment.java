@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -45,7 +46,7 @@ public class AlbumFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.album_frag, null);
+        View v = inflater.inflate(R.layout.album_frag, container,false);
         initUIAndListener(v);
         return v;
     }
@@ -70,28 +71,24 @@ public class AlbumFragment extends Fragment implements View.OnClickListener {
     }
 
     private List<String> getPhotosPaths() {
+        if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+            Toast.makeText(getActivity(),"can not write to device",Toast.LENGTH_LONG).show();
+            return new ArrayList<>();
+        }
         List<String> list = new ArrayList<String>();
-        checkParentDir();
         checkJpegDir();
-        File dir = new File(Environment.getExternalStorageDirectory() + "/Android_L_Test/jpeg/");
+        File dir = new File(getActivity().getExternalFilesDir(null) + "/face/jpeg/");
         File[] files = dir.listFiles();
         for (File file : files) {
-            list.add("file:///" + Environment.getExternalStorageDirectory() + "/Android_L_Test/jpeg/" + file.getName());
+            list.add("file:///" + getActivity().getExternalFilesDir(null) + "/face/jpeg/" + file.getName());
         }
         return list;
     }
 
-    private void checkParentDir() {
-        File dir = new File(Environment.getExternalStorageDirectory() + "/Android_L_Test/");
-        if (!dir.exists()) {
-            dir.mkdir();
-        }
-    }
-
     private void checkJpegDir() {
-        File dir = new File(Environment.getExternalStorageDirectory() + "/Android_L_Test/jpeg/");
+        File dir = new File(getActivity().getExternalFilesDir(null) + "/face/jpeg/");
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
     }
 

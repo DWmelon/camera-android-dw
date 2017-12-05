@@ -1,11 +1,11 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
 
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/primary_black</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -15,6 +15,10 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:typeface">sans</item>
+
+    </style>
+
+    <style name="AppTheme" parent="@style/BaseAppTheme">
 
     </style>
 
