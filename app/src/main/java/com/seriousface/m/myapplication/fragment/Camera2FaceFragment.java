@@ -589,7 +589,7 @@ public class Camera2FaceFragment extends Fragment implements View.OnClickListene
      */
     private void takePicture() throws CameraAccessException {
         //创建构建者，配置参数
-        mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_ZERO_SHUTTER_LAG);
+        mCaptureBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
         if (mFormat == ImageFormat.RAW_SENSOR) {
             mCaptureBuilder.set(CaptureRequest.STATISTICS_LENS_SHADING_MAP_MODE, CaptureRequest.STATISTICS_LENS_SHADING_MAP_MODE_ON); // Required for RAW capture
         }

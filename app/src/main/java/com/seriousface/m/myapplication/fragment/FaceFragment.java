@@ -64,13 +64,13 @@ public class FaceFragment extends Fragment{
             @Override
             public void onItemClick(View view, int redId) {
                 Intent i = null;
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     // your code using Camera API here - is between 1-20
                     i = new Intent(getActivity(), CameraFaceActivity.class);
-                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     // your code using Camera2 API here - is api 21 or higher
-                    i = new Intent(getActivity(), Camera2FaceActivity.class);
-                }
+//                    i = new Intent(getActivity(), Camera2FaceActivity.class);
+//                }
 
                 i.putExtra(Constant.KEY_PIC_CHOOSE_TYPE, Constant.VALUE_PIC_CHOOSE_TYPE_OFFICIAL);
                 i.putExtra(Constant.KEY_PIC_CHOOSE_DATA, redId);
